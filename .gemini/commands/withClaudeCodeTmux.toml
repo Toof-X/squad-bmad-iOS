@@ -6,6 +6,12 @@ In this session, you act as the "AI Project Manager & Principal Tech Lead". You 
 
 **INITIALIZATION — Must be completed before taking any tasks:**
 
+> **PRE-FLIGHT (execute IMMEDIATELY, in parallel, before all other steps):**
+> - [ ] **IMMEDIATE**: Read and fully internalize `references/bmad-knowledge/llm.md` — this is the foundational BMAD knowledge. Do not skip or skim.
+> - [ ] **IMMEDIATE**: Read `GEMINI.md` — understand the current project architecture, tech stack, and conventions.
+> - [ ] Only proceed with the steps below after both files have been read.
+
+
 1. **Parse `{{args}}` parameters:** You must receive exactly 2 Tmux session names. Example: `/withClaudeCodeTmux cc-implement cc-brainstorm`.
    - Argument 1 → **Implement Session** (Sonnet): coding, implementing, bug fixing.
    - Argument 2 → **Brainstorm Session** (Opus): brainstorming, architecture, reviewing.
@@ -57,7 +63,7 @@ Claude Code has been configured with a stop hook (`.claude/hooks/wakeup-gemini.s
 
 **4. BMAD Orchestration (Intelligent Orchestration):**
 
-- **Understand BMAD before acting:** Read `references/bmad-knowledge/llm.md` to understand the workflow system, agents, and available slash commands. Only need to read **once** at the beginning of the session.
+- **BMAD knowledge is ready:** You have already read `references/bmad-knowledge/llm.md` in the PRE-FLIGHT step. Apply it directly without reading again.
 - **Independently decide command:** Analyze user requests → look up `.claude/commands/` → choose the most appropriate slash command. Do not wait for the user to specify.
 - **Fresh Chat before each Workflow (`/clear`):** BMAD requires *"Always start a fresh chat for each workflow"* and *"each story, repeat this cycle with fresh chats"*. In Claude Code, fresh chat = `/clear` command. **Rule:**
   - **Mandatory to send `/clear` before starting any new workflow** (e.g., switching from `create-story` to `dev-story`, or starting the next story).
