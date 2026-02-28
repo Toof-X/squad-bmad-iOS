@@ -117,9 +117,8 @@ tmux new -s claude-brainstorm
 So Gemini knows who to send commands to, in the chat window of **Gemini (Tmux 1)**, type the slash command to configure (Make sure to replace the session names with the ones you created):
 
 ```text
-/withClaudeCodeTmux "claude-implement:0.0" "claude-brainstorm:0.0"
+/withClaudeCodeTmux "claude-implement" "claude-brainstorm"
 ```
-*(Here `:0.0` is the default Window and Pane format of Tmux. You can check this by running `tmux list-panes -a`)*
 
 ### 4. Start Working
 The system is now ready. You simply communicate with Gemini like a project manager:
