@@ -12,14 +12,16 @@ In this session, you act as the "AI Project Manager & Principal Tech Lead". You 
 > - [ ] Only proceed with the steps below after both files have been read.
 
 
-1. **Parse `{{args}}` parameters:** You must receive exactly 2 Tmux session names. Example: `/withClaudeCodeTmux cc-implement cc-brainstorm`.
-   - Argument 1 → **Implement Session** (Sonnet): coding, implementing, bug fixing.
-   - Argument 2 → **Brainstorm Session** (Opus): brainstorming, architecture, reviewing.
-   - If `{{args}}` is empty or missing 2 sessions, **STOP IMMEDIATELY** and ask the user to run the command again.
+1. **Detect session names from current project folder:**
+   - Run `basename "$PWD"` to get the folder name (e.g. `squad-bmad`).
+   - Derive the 3 session names from this folder name:
+     - **Gemini Orchestrator**: `gemini-orchestrator-<folder>`
+     - **Implement Session** (Sonnet): `claude-implement-<folder>`
+     - **Brainstorm Session** (Opus): `claude-brainstorm-<folder>`
+   - Run `.gemini/scripts/setup-sessions.sh` (no arguments needed — it auto-detects from `$PWD`). This script creates any missing sessions and starts the correct CLI commands inside each one. If a session already exists, it is reused as-is.
+   - After the script completes, verify all 3 sessions exist by running `tmux list-sessions`.
 
-2. **Validate mandatory session:** This command is **ONLY allowed to run inside the 'gemini-orchestrator' tmux session**. Perform 2 checks in this order:
-   - **Environment check:** Run `tmux display-message -p '#S'` — if the result is NOT `gemini-orchestrator`, **STOP IMMEDIATELY** and report an error: *"Error: This command must be run from inside the 'gemini-orchestrator' tmux session. Currently in session '[current session name]'."*
-   - **Check existence of both session windows:** Run `tmux has-session -t "<session>"` for **both** sessions in `{{args}}`. If any session/window does not exist, report an error and stop.
+2. **Validate you are in the Gemini Orchestrator session:** Run `tmux display-message -p '#S'` — if the result is NOT `gemini-orchestrator-<folder>`, **STOP IMMEDIATELY** and report an error: *"Error: This command must be run from inside the 'gemini-orchestrator-<folder>' tmux session. Currently in session '[current session name]'."*
 
 3. **Resolve your pane ID (Gemini):** Run `tmux display-message -p '#S:#I.#P'` to get the pane ID. **Save this value** and use it throughout the session for the ping mechanism. Do not ask again.
 
@@ -30,9 +32,9 @@ In this session, you act as the "AI Project Manager & Principal Tech Lead". You 
 **1. Tmux Operations — Core Rules:**
 
 - **Sending Principle (ALWAYS applies to ALL sends):**
-  - Use the `.claude/hooks/tmux-send.sh` script to send any content to Claude Code:
+  - Use the `.gemini/scripts/tmux-send.sh` script to send any content to Claude Code:
     ```
-    .claude/hooks/tmux-send.sh "<pane-target>" "content" [wait-seconds]
+    .gemini/scripts/tmux-send.sh "<pane-target>" "content" [wait-seconds]
     ```
     - `pane-target`: tmux target to the exact pane, e.g., `cc-implement:0` or `cc-implement:0.0`.
     - `wait-seconds`: optional, default is **5 seconds** — decrease (e.g., `2`) for quick commands, keep or increase for long prompts.
@@ -68,7 +70,7 @@ Claude Code has been configured with a stop hook (`.claude/hooks/wakeup-gemini.s
 - **Fresh Chat before each Workflow (`/clear`):** BMAD requires *"Always start a fresh chat for each workflow"* and *"each story, repeat this cycle with fresh chats"*. In Claude Code, fresh chat = `/clear` command. **Rule:**
   - **Mandatory to send `/clear` before starting any new workflow** (e.g., switching from `create-story` to `dev-story`, or starting the next story).
   - **Do not `/clear` mid-way** while a workflow is running — only clear when starting a completely new workflow.
-  - Use: `.claude/hooks/tmux-send.sh "<pane-target>" "/clear" 2`
+  - Use: `.gemini/scripts/tmux-send.sh "<pane-target>" "/clear" 2`
 - **Follow BMAD suggested next steps:** After each task is completed, BMAD will suggest the next step. Gemini **reads and evaluates** that suggestion:
   - If it fits the current scope → **send `/clear` → automatically continue** to the next workflow.
   - If it requires a business decision or is out of scope → **report to the user** before proceeding.

@@ -10,8 +10,8 @@
 #   wait-seconds  — (optional) seconds to wait between text and Enter, default: 5
 #
 # EXAMPLES:
-#   ./.claude/hooks/tmux-send.sh "gemini-orchestrator:0.0" "Hello from Claude Code"
-#   ./.claude/hooks/tmux-send.sh "cc-implement:0" "/dev-story" 3
+#   .gemini/scripts/tmux-send.sh "gemini-orchestrator:0.0" "Hello from Claude Code"
+#   .gemini/scripts/tmux-send.sh "cc-implement:0" "/dev-story" 3
 
 set -e
 

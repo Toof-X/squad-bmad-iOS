@@ -12,7 +12,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/wakeup-gemini.sh"
+            "command": "bash .gemini/hooks/wakeup-gemini.sh"
           }
         ]
       }
@@ -23,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/notify-gemini.sh \"$CLAUDE_NOTIFICATION\""
+            "command": "bash .gemini/hooks/notify-gemini.sh "$CLAUDE_NOTIFICATION""
           }
         ]
       }

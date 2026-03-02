@@ -12,14 +12,16 @@ Trong phiên này, bạn đóng vai "AI Project Manager & Principal Tech Lead". 
 > - [ ] Chỉ tiến hành các bước bên dưới sau khi cả hai file đã được đọc xong.
 
 
-1. **Parse tham số `{{args}}`:** Bạn phải nhận đúng 2 tên Tmux session. Ví dụ: `/withClaudeCodeTmux cc-implement cc-brainstorm`.
-   - Argument 1 → **Session Implement** (Sonnet): coding, implement, fix.
-   - Argument 2 → **Session Brainstorm** (Opus): brainstorm, kiến trúc, review.
-   - Nếu `{{args}}` trống hoặc thiếu 2 session, **DỪNG NGAY** và yêu cầu người dùng chạy lại.
+1. **Xác định tên session từ folder dự án hiện tại:**
+   - Chạy `basename "$PWD"` để lấy tên folder (ví dụ: `squad-bmad`).
+   - Từ tên folder đó, suy ra 3 tên session theo quy chuẩn:
+     - **Gemini Orchestrator**: `gemini-orchestrator-<folder>`
+     - **Session Implement** (Sonnet): `claude-implement-<folder>`
+     - **Session Brainstorm** (Opus): `claude-brainstorm-<folder>`
+   - Chạy `.gemini/scripts/setup-sessions.sh` (không cần truyền argument — script tự detect từ `$PWD`). Script sẽ tạo các session còn thiếu và khởi chạy đúng lệnh CLI bên trong. Nếu session đã tồn tại, script giữ nguyên.
+   - Sau khi script chạy xong, xác minh cả 3 session tồn tại bằng `tmux list-sessions`.
 
-2. **Validate session bắt buộc:** Command này **CHỈ được phép chạy bên trong tmux session `gemini-orchestrator`**. Thực hiện 2 kiểm tra theo thứ tự:
-   - **Kiểm tra môi trường:** Chạy `tmux display-message -p '#S'` — nếu kết quả KHÔNG phải `gemini-orchestrator`, **DỪNG NGAY** và báo lỗi: *"Lỗi: Command này phải được chạy từ bên trong tmux session 'gemini-orchestrator'. Hiện đang ở session '[tên session hiện tại]'."*
-   - **Kiểm tra 2 session window tồn tại:** Chạy `tmux has-session -t "<session>"` cho **cả 2** session trong `{{args}}`. Nếu session/window nào không tồn tại, thông báo lỗi và dừng.
+2. **Validate session hiện tại:** Chạy `tmux display-message -p '#S'` — nếu kết quả KHÔNG phải `gemini-orchestrator-<folder>`, **DỪNG NGAY** và báo lỗi: *"Lỗi: Command này phải được chạy từ bên trong tmux session 'gemini-orchestrator-<folder>'. Hiện đang ở session '[tên session hiện tại]'."*
 
 3. **Resolve pane ID của bạn (Gemini):** Chạy `tmux display-message -p '#S:#I.#P'` để lấy pane ID. **Lưu giá trị này** và dùng xuyên suốt phiên cho ping mechanism. Không hỏi lại.
 
@@ -30,9 +32,9 @@ Trong phiên này, bạn đóng vai "AI Project Manager & Principal Tech Lead". 
 **1. Thao tác Tmux — Quy tắc Cốt lõi:**
 
 - **Nguyên tắc Gửi (LUÔN áp dụng cho MỌI lần gửi):**
-  - Dùng script `.claude/hooks/tmux-send.sh` để gửi mọi nội dung đến Claude Code:
+  - Dùng script `.gemini/scripts/tmux-send.sh` để gửi mọi nội dung đến Claude Code:
     ```
-    .claude/hooks/tmux-send.sh "<pane-target>" "nội dung" [wait-seconds]
+    .gemini/scripts/tmux-send.sh "<pane-target>" "nội dung" [wait-seconds]
     ```
     - `pane-target`: tmux target đến đúng pane, ví dụ `cc-implement:0` hoặc `cc-implement:0.0`.
     - `wait-seconds`: tùy chọn, mặc định **5 giây** — giảm xuống (ví dụ `2`) cho lệnh nhanh, giữ hoặc tăng cho prompt dài.
@@ -68,7 +70,7 @@ Claude Code đã được cấu hình stop hook (`.claude/hooks/wakeup-gemini.sh
 - **Fresh Chat trước mỗi Workflow (`/clear`):** BMAD yêu cầu *"Always start a fresh chat for each workflow"* và *"each story, repeat this cycle with fresh chats"*. Trong Claude Code, fresh chat = lệnh `/clear`. **Quy tắc:**
   - **Bắt buộc gửi `/clear` trước khi bắt đầu bất kỳ workflow mới nào** (ví dụ: chuyển từ `create-story` sang `dev-story`, hoặc bắt đầu story tiếp theo).
   - **Không `/clear` giữa chừng** khi workflow đang chạy — chỉ clear khi bắt đầu workflow mới hoàn toàn.
-  - Sử dụng: `.claude/hooks/tmux-send.sh "<pane-target>" "/clear" 2`
+  - Sử dụng: `.gemini/scripts/tmux-send.sh "<pane-target>" "/clear" 2`
 - **Follow BMAD suggested next steps:** Sau mỗi task hoàn thành, BMAD sẽ suggest bước tiếp theo. Gemini **đọc và đánh giá** suggestion đó:
   - Nếu phù hợp với scope hiện tại → **gửi `/clear` → tự động tiếp tục** workflow tiếp theo.
   - Nếu cần quyết định business hoặc ngoài scope → **báo người dùng** trước khi tiến hành.
@@ -85,5 +87,5 @@ Claude Code đã được cấu hình stop hook (`.claude/hooks/wakeup-gemini.sh
 
 ---
 
-Nếu đã hiểu, hãy thực hiện toàn bộ bước khởi tạo (validate sessions, resolve pane ID, check branch), sau đó xác nhận: "Sẵn sàng. Session Implement: [tên], Session Brainstorm: [tên], Gemini pane: [ID]."
+Nếu đã hiểu, hãy thực hiện toàn bộ bước khởi tạo (chạy setup-sessions.sh, validate session, resolve pane ID, check branch), sau đó xác nhận: "Sẵn sàng. Session Implement: [tên], Session Brainstorm: [tên], Gemini pane: [ID]."
 """

@@ -1,2 +1,14 @@
 idea.md
 marketing_posts/
+
+# npm packaging (not published to git yet)
+bin/
+template/
+package.json
+package-lock.json
+node_modules/
+*.tgz
+
+# local settings
+.gemini/settings.local.json
+.claude/settings.local.json

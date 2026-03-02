@@ -1,5 +1,8 @@
 # Squad BMAD: Trợ Lý Ảo Điều Phối Dự Án Tự Động Với Gemini & Claude Code
 
+[![Version](https://img.shields.io/badge/version-1.2.2-blue.svg)](CHANGELOG.md)
+[![npm](https://img.shields.io/npm/v/squad-bmad.svg)](https://www.npmjs.com/package/squad-bmad)
+
 Chào mừng bạn đến với **Squad BMAD** – một boilerplate/giải pháp thiết kế để biến **Gemini CLI** trở thành một **Project Manager & Principal Tech Lead** thực thụ. Bằng cách kết hợp sức mạnh điều phối của Gemini và khả năng lập trình/suy luận xuất sắc của **Claude Code** thông qua môi trường **Tmux**, dự án này tự động hóa và tối ưu hóa luồng công việc phát triển phần mềm dựa trên nền tảng phương pháp luận **BMAD**.
 
 ---
@@ -48,12 +51,12 @@ Hệ thống hoạt động dựa trên sự phối hợp nhịp nhàng của **
 2. **Session 2: Claude Code - Implement (Thực thi)**
    - Đóng vai trò là một **Developer**.
    - Chuyên dùng để viết code, sửa lỗi, chạy test.
-   - Sử dụng model **Claude 3.5 Sonnet** để đảm bảo tốc độ nhanh, code giỏi và tiết kiệm chi phí.
+   - Sử dụng model **Claude Sonnet** để đảm bảo tốc độ nhanh, code giỏi và tiết kiệm chi phí.
 
 3. **Session 3: Claude Code - Brainstorm (Suy luận)**
    - Đóng vai trò là **Architect / PM / QA**.
    - Chuyên dùng để suy luận kiến trúc, giải quyết các bài toán phức tạp, thiết kế hệ thống và review code.
-   - Sử dụng model **Claude 3.5 Sonnet** (hoặc **Opus** tuỳ cấu hình) cho các tác vụ cần tư duy logic sâu.
+   - Sử dụng model **Claude Opus** cho các tác vụ cần tư duy logic sâu.
 
 ### 🔄 Hệ Thống Event-Driven bằng Hooks
 
@@ -84,41 +87,50 @@ Với **Squad BMAD**, bạn không còn là một coder cặm cụi gõ từng d
 
 ## 🛠 Cách Cài Đặt & Sử Dụng (How to use)
 
-### 1. Chuẩn Bị Môi Trường Tmux
-Bạn cần khởi tạo 3 session Tmux riêng biệt. Bạn có thể đặt tên tuỳ ý, ví dụ:
-- Session 1 (Gemini): `gemini-orchestrator`
-- Session 2 (Claude Implement): `claude-implement`
-- Session 3 (Claude Brainstorm): `claude-brainstorm`
+### 1. Cài Đặt Squad BMAD
 
-Mở 3 terminal và chạy lần lượt:
+Từ thư mục dự án của bạn, chạy:
+
 ```bash
-tmux new -s gemini-orchestrator
-tmux new -s claude-implement
-tmux new -s claude-brainstorm
+npx squad-bmad install
 ```
 
-### 2. Khởi Chạy Các Tác Nhân
-- **Tại Tmux 1 (`gemini-orchestrator`)**: Khởi chạy Gemini CLI.
-  ```bash
-  gemini --yolo --model gemini-3-pro-preview
-  ```
-- **Tại Tmux 2 (`claude-implement`)**: Khởi chạy Claude Code. Mặc định Claude Code sẽ dùng model Sonnet.
-  ```bash
-  claude --dangerously-skip-permissions --model sonnet
-  ```
-- **Tại Tmux 3 (`claude-brainstorm`)**: Khởi chạy Claude Code. (Nên cấu hình dùng model Opus nếu bạn cần suy luận kiến trúc phức tạp).
-  ```bash
-  claude --dangerously-skip-permissions --model opus
-  ```
+Lệnh này sẽ:
+- Sao chép các hook script, tiện ích tmux, và Gemini slash command vào dự án của bạn.
+- Tự động cấu hình `.claude/settings.json` với các hooks cần thiết (hoặc in hướng dẫn nếu bạn đã có phần hooks tùy chỉnh).
+- Nhắc bạn cài đặt BMAD Method (`npx bmad-method install`) nếu chưa có.
 
-### 3. Cấu Hình Tên Phiên Cho Gemini
-Để Gemini biết được cần gửi lệnh cho ai, trong cửa sổ chat của **Gemini (Tmux 1)**, bạn gõ slash command để cấu hình (Lưu ý thay tên session cho đúng với tên bạn đã tạo):
+> **Nâng cấp?** Chạy `npx squad-bmad upgrade` để ghi đè các file hiện có bằng phiên bản mới nhất.
+
+### 2. Chuẩn Bị Môi Trường Tmux
+
+Tất cả 3 sessions đều được tạo tự động theo **quy chuẩn đặt tên dựa trên tên folder dự án**. Chạy script setup từ thư mục dự án:
+
+```bash
+bash .gemini/scripts/setup-sessions.sh
+```
+
+Script sẽ tự động tạo (hoặc bỏ qua nếu đã tồn tại):
+- `gemini-orchestrator-<folder>` — khởi chạy `gemini --yolo --model gemini-3-pro-preview`
+- `claude-implement-<folder>` — khởi chạy `claude --dangerously-skip-permissions --model sonnet`
+- `claude-brainstorm-<folder>` — khởi chạy `claude --dangerously-skip-permissions --model opus`
+
+### 3. Truy cập Gemini Orchestrator
+
+Attach vào session Gemini của dự án:
+```bash
+tmux attach -t gemini-orchestrator-<folder>
+```
+
+### 4. Chạy Slash Command
+
+Trong Gemini, gõ slash command — **không cần truyền argument**. Gemini sẽ tự detect folder và kiểm tra cả 3 sessions:
 
 ```text
-/withClaudeCodeTmux "claude-implement" "claude-brainstorm"
+/withClaudeCodeTmux
 ```
 
-### 4. Bắt Đầu Công Việc
+### 5. Bắt Đầu Công Việc
 Giờ đây hệ thống đã sẵn sàng. Bạn chỉ việc giao tiếp với Gemini như một người quản lý dự án:
 - *"Bắt đầu project này giúp tôi bằng luồng generate-project-context."*
 - *"Chúng ta đang ở Epic nào? Hãy tạo story mới cho tính năng đăng nhập."*

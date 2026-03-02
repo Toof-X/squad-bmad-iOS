@@ -1,5 +1,8 @@
 # Squad BMAD: Automated Project Orchestration Assistant with Gemini & Claude Code
 
+[![Version](https://img.shields.io/badge/version-1.2.2-blue.svg)](CHANGELOG.md)
+[![npm](https://img.shields.io/npm/v/squad-bmad.svg)](https://www.npmjs.com/package/squad-bmad)
+
 *Read this in other languages: [English](README.md), [Tiếng Việt](README.vi.md).*
 
 Welcome to **Squad BMAD** – a boilerplate/design solution to transform **Gemini CLI** into a true **Project Manager & Principal Tech Lead**. By combining Gemini's orchestration power with **Claude Code's** excellent coding and reasoning capabilities via **Tmux**, this project automates and optimizes the software development workflow based on the **BMAD** methodology.
@@ -50,12 +53,12 @@ The system operates based on the smooth coordination of **3 Tmux sessions**:
 2. **Session 2: Claude Code - Implement**
    - Acts as a **Developer**.
    - Specialized in writing code, fixing bugs, and running tests.
-   - Uses the **Claude 3.5 Sonnet** model to ensure fast speed, excellent coding, and cost savings.
+   - Uses the **Claude Sonnet** model to ensure fast speed, excellent coding, and cost savings.
 
 3. **Session 3: Claude Code - Brainstorm**
    - Acts as an **Architect / PM / QA**.
    - Specialized in reasoning about architecture, solving complex problems, designing systems, and reviewing code.
-   - Uses the **Claude 3.5 Sonnet** (or **Opus** depending on configuration) model for tasks requiring deep logical thinking.
+   - Uses the **Claude Opus** model for tasks requiring deep logical thinking.
 
 ### 🔄 Event-Driven System with Hooks
 
@@ -86,41 +89,50 @@ With **Squad BMAD**, you are no longer a coder painstakingly typing every line o
 
 ## 🛠 Setup & Usage
 
-### 1. Prepare the Tmux Environment
-You need to initialize 3 separate Tmux sessions. You can name them whatever you like, for example:
-- Session 1 (Gemini): `gemini-orchestrator`
-- Session 2 (Claude Implement): `claude-implement`
-- Session 3 (Claude Brainstorm): `claude-brainstorm`
+### 1. Install Squad BMAD
 
-Open 3 terminals and run consecutively:
+From your project directory, run:
+
 ```bash
-tmux new -s gemini-orchestrator
-tmux new -s claude-implement
-tmux new -s claude-brainstorm
+npx squad-bmad install
 ```
 
-### 2. Launch the Agents
-- **In Tmux 1 (`gemini-orchestrator`)**: Launch Gemini CLI.
-  ```bash
-  gemini --yolo --model gemini-3-pro-preview
-  ```
-- **In Tmux 2 (`claude-implement`)**: Launch Claude Code. By default, Claude Code uses the Sonnet model.
-  ```bash
-  claude --dangerously-skip-permissions --model sonnet
-  ```
-- **In Tmux 3 (`claude-brainstorm`)**: Launch Claude Code. (You should configure it to use the Opus model if you need complex architectural reasoning).
-  ```bash
-  claude --dangerously-skip-permissions --model opus
-  ```
+This will:
+- Copy hook scripts, tmux utilities, and Gemini slash commands into your project.
+- Automatically configure `.claude/settings.json` with the required hooks (or print instructions if you already have a custom hooks section).
+- Remind you to install the BMAD Method (`npx bmad-method install`) if it's not already present.
 
-### 3. Configure Session Names for Gemini
-So Gemini knows who to send commands to, in the chat window of **Gemini (Tmux 1)**, type the slash command to configure (Make sure to replace the session names with the ones you created):
+> **Upgrading?** Run `npx squad-bmad upgrade` to overwrite existing files with the latest version.
+
+### 2. Prepare the Tmux Environment
+
+All 3 sessions follow a **project-aware naming convention** based on your folder name. Run the setup script from your project directory:
+
+```bash
+bash .gemini/scripts/setup-sessions.sh
+```
+
+This will automatically create (or skip if already existing):
+- `gemini-orchestrator-<folder>` — launches `gemini --yolo --model gemini-3-pro-preview`
+- `claude-implement-<folder>` — launches `claude --dangerously-skip-permissions --model sonnet`
+- `claude-brainstorm-<folder>` — launches `claude --dangerously-skip-permissions --model opus`
+
+### 3. Start Gemini Orchestrator
+
+Attach to the Gemini session for your project:
+```bash
+tmux attach -t gemini-orchestrator-<folder>
+```
+
+### 4. Run the Slash Command
+
+Inside Gemini, run the slash command — **no arguments needed**. Gemini will auto-detect the project folder and verify all sessions:
 
 ```text
-/withClaudeCodeTmux "claude-implement" "claude-brainstorm"
+/withClaudeCodeTmux
 ```
 
-### 4. Start Working
+### 5. Start Working
 The system is now ready. You simply communicate with Gemini like a project manager:
 - *"Start this project for me using the generate-project-context flow."*
 - *"Which Epic are we in? Create a new story for the login feature."*
