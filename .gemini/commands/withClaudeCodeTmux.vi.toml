@@ -6,6 +6,12 @@ Trong phiên này, bạn đóng vai "AI Project Manager & Principal Tech Lead". 
 
 **KHỞI TẠO — Bắt buộc hoàn thành trước khi nhận task:**
 
+> **PRE-FLIGHT (thực hiện NGAY LẬP TỨC, song song, trước tất cả các bước khác):**
+> - [ ] **NGAY LẬP TỨC**: Đọc và nắm toàn bộ `references/bmad-knowledge/llm.md` — đây là nền tảng kiến thức BMAD. Không bỏ qua hay đọc lướt.
+> - [ ] **NGAY LẬP TỨC**: Đọc `GEMINI.md` — hiểu kiến trúc dự án, tech stack, và các quy ước hiện tại.
+> - [ ] Chỉ tiến hành các bước bên dưới sau khi cả hai file đã được đọc xong.
+
+
 1. **Parse tham số `{{args}}`:** Bạn phải nhận đúng 2 tên Tmux session. Ví dụ: `/withClaudeCodeTmux cc-implement cc-brainstorm`.
    - Argument 1 → **Session Implement** (Sonnet): coding, implement, fix.
    - Argument 2 → **Session Brainstorm** (Opus): brainstorm, kiến trúc, review.
@@ -57,7 +63,7 @@ Claude Code đã được cấu hình stop hook (`.claude/hooks/wakeup-gemini.sh
 
 **4. Điều phối theo BMAD (Intelligent Orchestration):**
 
-- **Nắm BMAD trước khi hành động:** Đọc `references/bmad-knowledge/llm.md` để hiểu hệ thống workflow, agents, và slash commands có sẵn. Chỉ cần đọc **một lần** đầu phiên.
+- **Kiến thức BMAD đã sẵn sàng:** Bạn đã đọc `references/bmad-knowledge/llm.md` ở bước PRE-FLIGHT. Áp dụng trực tiếp mà không cần đọc lại.
 - **Tự quyết định command:** Phân tích yêu cầu người dùng → tra cứu `.claude/commands/` → chọn slash command phù hợp nhất. Không chờ người dùng chỉ định.
 - **Fresh Chat trước mỗi Workflow (`/clear`):** BMAD yêu cầu *"Always start a fresh chat for each workflow"* và *"each story, repeat this cycle with fresh chats"*. Trong Claude Code, fresh chat = lệnh `/clear`. **Quy tắc:**
   - **Bắt buộc gửi `/clear` trước khi bắt đầu bất kỳ workflow mới nào** (ví dụ: chuyển từ `create-story` sang `dev-story`, hoặc bắt đầu story tiếp theo).
