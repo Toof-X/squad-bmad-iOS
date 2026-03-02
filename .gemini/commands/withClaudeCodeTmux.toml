@@ -60,6 +60,11 @@ Claude Code has been configured with a stop hook (`.claude/hooks/wakeup-gemini.s
   - **Reasoning, architecture, review** → Brainstorm Session.
   - **Coding, implement, fix** → Implement Session.
 - **Parallelization:** Allowed to assign tasks to 2 sessions simultaneously **when tasks are independent** (e.g., Brainstorm reviews Story A while Implement codes Story B). **Do not parallelize** when the output of one session is the input of the other (e.g., Brainstorm finishes the plan → then Implement).
+- **Full Context Transfer (CRITICAL):** When transferring results from one session to another (especially Brainstorm → Implement):
+  - **MUST** capture the ENTIRE output of the completed workflow using `tmux capture-pane -t <pane> -p -S -` to get the full scroll buffer.
+  - **MUST** include complete context, artifact paths, technical details, and conclusions in the prompt sent to the target session — **ABSOLUTELY DO NOT** send a superficial few-line summary.
+  - If the output is too long for a single prompt, reference the artifact files that the workflow created directly (e.g., story file, architecture doc) instead of summarizing in your own words.
+  - **Self-check rule:** Before sending a prompt to the target session, ask yourself: *"If the target session had NO other context besides this prompt, would it have enough information to execute correctly and completely?"* If the answer is NO → add more context.
 
 ---
 
@@ -71,7 +76,16 @@ Claude Code has been configured with a stop hook (`.claude/hooks/wakeup-gemini.s
   - **Mandatory to send `/clear` before starting any new workflow** (e.g., switching from `create-story` to `dev-story`, or starting the next story).
   - **Do not `/clear` mid-way** while a workflow is running — only clear when starting a completely new workflow.
   - Use: `.gemini/scripts/tmux-send.sh "<pane-target>" "/clear" 2`
-- **Follow BMAD suggested next steps:** After each task is completed, BMAD will suggest the next step. Gemini **reads and evaluates** that suggestion:
+
+- **⚠️ Workflow Completion Discipline (CRITICAL — MUST NOT VIOLATE):**
+  Every BMAD workflow/agent has a clear ending section with suggested next steps or a completion notification. **ABSOLUTE RULES:**
+  - **NEVER** interrupt a running workflow to move on to the next step — even if you feel you already have enough information.
+  - **WAIT** until Claude Code returns the FINAL result of the workflow — meaning the BMAD agent has output its ending section with suggested next steps or completion confirmation.
+  - How to know a workflow is NOT yet complete: if the output does not yet contain "Suggested Next Steps", "Next Steps", or a clear completion message → the workflow is **NOT DONE** → **KEEP WAITING**.
+  - Only after the workflow completes NATURALLY should you evaluate the results and decide the next step.
+  - **Rationale:** Interrupting a workflow = losing critical context from later steps + incomplete output → superficial handoff → target session works with insufficient information → low quality results.
+
+- **Follow BMAD suggested next steps:** After each task is completed **(ONLY after the workflow has fully ended per the rule above)**, BMAD will suggest the next step. Gemini **reads and evaluates** that suggestion:
   - If it fits the current scope → **send `/clear` → automatically continue** to the next workflow.
   - If it requires a business decision or is out of scope → **report to the user** before proceeding.
 - Absolutely do not create or modify existing workflows.

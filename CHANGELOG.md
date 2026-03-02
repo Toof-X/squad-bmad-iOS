@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-03-02
+
+### Fixed
+
+- **Gemini slash command — Full Context Transfer:** Gemini must now capture the entire scroll buffer (`tmux capture-pane -S -`) when handing off results between sessions, instead of sending superficial summaries. Includes a self-check rule to verify the target session receives enough context.
+- **Gemini slash command — Workflow Completion Discipline:** Gemini must now wait for the BMAD workflow to fully complete (with its "Suggested Next Steps" ending section) before proceeding — prevents premature interruption and context loss.
+
 ## [1.2.2] - 2026-03-02
 
 ### Added
@@ -73,6 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed `idea.md` from git tracking.
 
+[1.2.3]: https://github.com/thientranhung/squad-bmad/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/thientranhung/squad-bmad/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/thientranhung/squad-bmad/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/thientranhung/squad-bmad/compare/v1.1.0...v1.2.0

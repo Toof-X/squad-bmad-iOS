@@ -60,6 +60,11 @@ Claude Code đã được cấu hình stop hook (`.claude/hooks/wakeup-gemini.sh
   - **Suy luận, kiến trúc, review** → Session Brainstorm.
   - **Coding, implement, fix** → Session Implement.
 - **Song song hóa:** Được phép giao task cho 2 session đồng thời **khi task độc lập** (ví dụ: Brainstorm review Story A trong khi Implement code Story B). **Không song song** khi output của session này là input của session kia (ví dụ: Brainstorm xong plan → mới Implement).
+- **Chuyển giao Context Đầy đủ (CRITICAL):** Khi chuyển kết quả từ session này sang session khác (đặc biệt Brainstorm → Implement):
+  - **PHẢI** capture TOÀN BỘ output của workflow vừa hoàn thành bằng `tmux capture-pane -t <pane> -p -S -` để lấy full scroll buffer.
+  - **PHẢI** include đầy đủ context, artifacts path, chi tiết kỹ thuật, và kết luận vào prompt gửi cho session đích — **TUYỆT ĐỐI KHÔNG** tóm tắt sơ sài vài dòng.
+  - Nếu output quá dài cho một prompt, hãy tham chiếu trực tiếp đến các artifact files mà workflow đã tạo (ví dụ: story file, architecture doc) thay vì tóm tắt bằng lời.
+  - **Quy tắc kiểm chứng:** Trước khi gửi prompt cho session đích, tự hỏi: *"Nếu session đích không có BẤT KỲ context nào khác ngoài prompt này, liệu nó có đủ thông tin để thực hiện đúng và đầy đủ không?"* Nếu câu trả lời là KHÔNG → bổ sung thêm context.
 
 ---
 
@@ -71,7 +76,16 @@ Claude Code đã được cấu hình stop hook (`.claude/hooks/wakeup-gemini.sh
   - **Bắt buộc gửi `/clear` trước khi bắt đầu bất kỳ workflow mới nào** (ví dụ: chuyển từ `create-story` sang `dev-story`, hoặc bắt đầu story tiếp theo).
   - **Không `/clear` giữa chừng** khi workflow đang chạy — chỉ clear khi bắt đầu workflow mới hoàn toàn.
   - Sử dụng: `.gemini/scripts/tmux-send.sh "<pane-target>" "/clear" 2`
-- **Follow BMAD suggested next steps:** Sau mỗi task hoàn thành, BMAD sẽ suggest bước tiếp theo. Gemini **đọc và đánh giá** suggestion đó:
+
+- **⚠️ Kỷ luật Hoàn thành Workflow (CRITICAL — KHÔNG ĐƯỢC VI PHẠM):**
+  Mỗi workflow/agent BMAD đều có phần kết thúc rõ ràng (ending) kèm suggested next steps hoặc thông báo hoàn tất. **QUY TẮC TUYỆT ĐỐI:**
+  - **KHÔNG BAO GIỜ** ngắt ngang một workflow đang chạy để chuyển sang bước khác — dù bạn cảm thấy đã có đủ thông tin.
+  - **CHỜ ĐỢI** cho đến khi Claude Code trả về kết quả CUỐI CÙNG của workflow — tức là khi BMAD agent output phần ending với suggested next steps hoặc confirmation hoàn thành.
+  - Cách nhận biết workflow chưa hoàn thành: nếu output chưa có phần "Suggested Next Steps", "Next Steps", hoặc thông báo kết thúc rõ ràng → workflow **CHƯA XONG** → **TIẾP TỤC CHỜ**.
+  - Chỉ sau khi workflow hoàn thành TỰ NHIÊN, mới đánh giá kết quả và quyết định bước tiếp theo.
+  - **Lý do:** Ngắt ngang workflow = mất context quan trọng ở các bước cuối + output không đầy đủ → chuyển giao sơ sài → session đích làm việc thiếu thông tin → chất lượng thấp.
+
+- **Follow BMAD suggested next steps:** Sau mỗi task hoàn thành **(CHỈ sau khi workflow đã kết thúc hoàn toàn theo rule trên)**, BMAD sẽ suggest bước tiếp theo. Gemini **đọc và đánh giá** suggestion đó:
   - Nếu phù hợp với scope hiện tại → **gửi `/clear` → tự động tiếp tục** workflow tiếp theo.
   - Nếu cần quyết định business hoặc ngoài scope → **báo người dùng** trước khi tiến hành.
 - Tuyệt đối không tự tạo hay chỉnh sửa workflow có sẵn.
