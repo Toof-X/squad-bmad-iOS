@@ -1,7 +1,7 @@
 # Squad BMAD: Automated Project Orchestration Assistant with Gemini & Claude Code
 
 [![Version](https://img.shields.io/badge/version-1.2.2-blue.svg)](CHANGELOG.md)
-[![npm](https://img.shields.io/npm/v/squad-bmad.svg)](https://www.npmjs.com/package/squad-bmad)
+[![npm](https://img.shields.io/npm/v/squad-bmad-ios.svg)](https://www.npmjs.com/package/squad-bmad-ios)
 
 *Read this in other languages: [English](README.md), [Tiếng Việt](README.vi.md).*
 
@@ -94,15 +94,15 @@ With **Squad BMAD**, you are no longer a coder painstakingly typing every line o
 From your project directory, run:
 
 ```bash
-npx squad-bmad install
+npx squad-bmad-ios install
 ```
 
 This will:
 - Copy hook scripts, tmux utilities, and Gemini slash commands into your project.
 - Automatically configure `.claude/settings.json` with the required hooks (or print instructions if you already have a custom hooks section).
-- Remind you to install the BMAD Method (`npx bmad-method install`) if it's not already present.
+- Remind you to install the BMAD Method (`npx bmad-method-ios install`) if it's not already present.
 
-> **Upgrading?** Run `npx squad-bmad upgrade` to overwrite existing files with the latest version.
+> **Upgrading?** Run `npx squad-bmad-ios upgrade` to overwrite existing files with the latest version.
 
 ### 2. Prepare the Tmux Environment
 

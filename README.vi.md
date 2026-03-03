@@ -1,7 +1,7 @@
 # Squad BMAD: Trợ Lý Ảo Điều Phối Dự Án Tự Động Với Gemini & Claude Code
 
 [![Version](https://img.shields.io/badge/version-1.2.2-blue.svg)](CHANGELOG.md)
-[![npm](https://img.shields.io/npm/v/squad-bmad.svg)](https://www.npmjs.com/package/squad-bmad)
+[![npm](https://img.shields.io/npm/v/squad-bmad-ios.svg)](https://www.npmjs.com/package/squad-bmad-ios)
 
 Chào mừng bạn đến với **Squad BMAD** – một boilerplate/giải pháp thiết kế để biến **Gemini CLI** trở thành một **Project Manager & Principal Tech Lead** thực thụ. Bằng cách kết hợp sức mạnh điều phối của Gemini và khả năng lập trình/suy luận xuất sắc của **Claude Code** thông qua môi trường **Tmux**, dự án này tự động hóa và tối ưu hóa luồng công việc phát triển phần mềm dựa trên nền tảng phương pháp luận **BMAD**.
 
@@ -92,15 +92,15 @@ Với **Squad BMAD**, bạn không còn là một coder cặm cụi gõ từng d
 Từ thư mục dự án của bạn, chạy:
 
 ```bash
-npx squad-bmad install
+npx squad-bmad-ios install
 ```
 
 Lệnh này sẽ:
 - Sao chép các hook script, tiện ích tmux, và Gemini slash command vào dự án của bạn.
 - Tự động cấu hình `.claude/settings.json` với các hooks cần thiết (hoặc in hướng dẫn nếu bạn đã có phần hooks tùy chỉnh).
-- Nhắc bạn cài đặt BMAD Method (`npx bmad-method install`) nếu chưa có.
+- Nhắc bạn cài đặt BMAD Method (`npx bmad-method-ios install`) nếu chưa có.
 
-> **Nâng cấp?** Chạy `npx squad-bmad upgrade` để ghi đè các file hiện có bằng phiên bản mới nhất.
+> **Nâng cấp?** Chạy `npx squad-bmad-ios upgrade` để ghi đè các file hiện có bằng phiên bản mới nhất.
 
 ### 2. Chuẩn Bị Môi Trường Tmux
 

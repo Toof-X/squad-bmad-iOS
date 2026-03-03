@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **npm package**: Squad BMAD is now installable via `npx squad-bmad install`. A single command copies all hook scripts, tmux utilities, and Gemini slash commands into the user's project.
+- **npm package**: Squad BMAD is now installable via `npx squad-bmad-ios install`. A single command copies all hook scripts, tmux utilities, and Gemini slash commands into the user's project.
 - **CLI** (`bin/cli.js`): New CLI with `install` and `upgrade` commands. Handles smart-merging of `.claude/settings.json` hooks and checks for BMAD Method dependency.
 - **`template/` directory**: All distributable files are now bundled under `template/` for clean npm packaging.
 
@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **`README.md`** and **`README.vi.md`**: Rewrote Setup section — installation is now a single `npx squad-bmad install` command (Step 1), with existing steps renumbered accordingly. Added npm badge.
+- **`README.md`** and **`README.vi.md`**: Rewrote Setup section — installation is now a single `npx squad-bmad-ios install` command (Step 1), with existing steps renumbered accordingly. Added npm badge.
 
 ## [1.1.0] - 2026-03-02
 
