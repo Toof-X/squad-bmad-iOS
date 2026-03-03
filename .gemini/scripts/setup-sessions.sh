@@ -64,9 +64,9 @@ echo ""
 echo "  Project folder : ${FOLDER}"
 echo ""
 echo "  Sessions to create:"
-echo "    1. ${SESSION_GEMINI}"
-echo "    2. ${SESSION_IMPLEMENT}"
-echo "    3. ${SESSION_BRAINSTORM}"
+echo "    1. ${SESSION_GEMINI}    (current terminal)"
+echo "    2. ${SESSION_IMPLEMENT} (new terminal)"
+echo "    3. ${SESSION_BRAINSTORM} (new terminal)"
 echo ""
 
 # ── 1. Gemini Orchestrator ───────────────────────────────────────────────────
@@ -92,8 +92,12 @@ echo ""
 echo "Done. Active tmux sessions:"
 tmux list-sessions 2>/dev/null | sed 's/^/  /'
 echo ""
-echo "To attach:"
-echo "  tmux attach -t ${SESSION_GEMINI}"
-echo "  tmux attach -t ${SESSION_IMPLEMENT}"
-echo "  tmux attach -t ${SESSION_BRAINSTORM}"
-echo ""
+
+# ── Open new Terminal windows for Claude sessions ─────────────────────────────
+echo "Opening new terminals for Claude sessions..."
+osascript -e "tell application \"Terminal\" to do script \"tmux attach -t ${SESSION_IMPLEMENT}\""
+osascript -e "tell application \"Terminal\" to do script \"tmux attach -t ${SESSION_BRAINSTORM}\""
+
+# ── Attach Gemini orchestrator in the current terminal ────────────────────────
+echo "Attaching Gemini orchestrator in current terminal..."
+exec tmux attach -t "$SESSION_GEMINI"
