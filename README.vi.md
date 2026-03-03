@@ -1,4 +1,4 @@
-# Squad BMAD: Trợ Lý Ảo Điều Phối Dự Án Tự Động Với Gemini & Claude Code
+# Squad BMAD iOS: Trợ Lý Ảo Điều Phối Dự Án Tự Động Với Gemini & Claude Code
 
 [![Version](https://img.shields.io/badge/version-1.2.2-blue.svg)](CHANGELOG.md)
 [![npm](https://img.shields.io/npm/v/squad-bmad-ios.svg)](https://www.npmjs.com/package/squad-bmad-ios)
